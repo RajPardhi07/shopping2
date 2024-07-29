@@ -1,0 +1,115 @@
+.admin-dashboard-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.admin-dashboard-content {
+    width: 87vw;
+    margin-top: 1rem;
+    padding: 7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.admin-table-container {
+    width: 80vw;
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #d1d5db;
+}
+
+.admin-table-head {
+    background-color: #f3f4f6;
+}
+
+.admin-table-cell {
+    padding: 0.5rem;
+    text-align: left;
+}
+
+.admin-qr-code {
+    width: 50px;
+    border-radius: 0.5rem;
+}
+
+.admin-delete-btn,
+.admin-edit-btn {
+    padding: 0.5rem;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.admin-icon {
+    font-size: 1.5rem;
+    color: inherit;
+    transition: color 0.3s ease;
+}
+
+.admin-delete-btn:hover,
+.admin-edit-btn:hover {
+    color: #3b82f6;
+}
+
+.admin-edit-container {
+    margin-top: 7rem;
+    margin-left: 32vw;
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    width: 30rem;
+}
+
+.admin-edit-title {
+    font-size:2vw;
+    color:#293690;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.admin-edit-field {
+    margin-bottom: 1rem;
+}
+
+.admin-edit-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #4a5568;
+    margin-bottom: 0.25rem;
+}
+
+.admin-edit-input {
+    padding: 0.5rem;
+    width: 100%;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+}
+
+.admin-save-btn {
+    background-color:#293690;
+    color: #ffffff;
+    padding:10px 20px;
+    border-radius:6px;
+    cursor: pointer;
+    font-size: 20px;
+    width: 100%;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.admin-save-btn:hover {
+    background-color: #081048;
+}
+
+.admin-table-cell a{
+    cursor: pointer;
+}

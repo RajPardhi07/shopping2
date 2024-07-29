@@ -1,7 +1,8 @@
 import userModel from "../model/userModel.js";
 import { comparePassword, hashPassword } from '../helper/authHelper.js'
 import JWT from 'jsonwebtoken';
-
+import QRCode from 'qrcode'
+import QRModel from "../model/QRModel.js";
 
 export const registerController = async (req, res) => {
     try {
@@ -124,15 +125,72 @@ export const alluserController = async (req, res) => {
 }
 
 
+export const generateQR = async (req, res) => {
+    try {
+        const { components, dateReceived, itemsReceived } = req.body
+
+        const currentDate = new Date();
+        const receivedDate = new Date(dateReceived);
+
+        if (receivedDate > currentDate) {
+            return res.status(404).json({ message: "date Received cannot be future date" })
+        }
+
+        const qrIdentifier = `${components}-${Date.now()}`;
+        const qrCode = await QRCode.toDataURL(qrIdentifier)
+        console.log("qrcodeee", qrCode)
+
+        const InventaryItem = await QRModel.create({
+            components,
+            dateReceived,
+            balanceItem: itemsReceived,
+            qrIdentifier,
+            qrCode,
+            dispatchItems:0
+            
+              })
+
+        console.log("Saved Inventory data", InventaryItem)
+        res.status(200).json({ qrCode })
+
+
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            message: "Internal Server Error",
+            error
+        })
+    }
+
+}
+
+
+export const QRCodedata = async (req, res) => {
+    try {
+        const QRcodedata = await QRModel.find();
+        res.status(200).json(QRcodedata)
+
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            message: "Internal Server Error",
+            error
+        })
+    }
+}
+
+
 export const updateController = async (req, res) => {
     try {
         const { id } = req.params
         const data = req.body
 
-        const updatedUser = await userModel.findByIdAndUpdate(id, data, {new:true})
+        const updatedUser = await userModel.findByIdAndUpdate(id, data, { new: true })
         res.status(200).send({
-            success:true,
-            message:"Profile Edited Successfully",
+            success: true,
+            message: "Profile Edited Successfully",
             updatedUser
         })
     } catch (error) {

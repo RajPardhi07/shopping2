@@ -1,61 +1,63 @@
-import axios from "axios";
-import { useState } from "react";
-import toast from "react-hot-toast";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { loginFailure, loginStart, loginSuccess } from "../reducer/authSlice";
+// src/pages/Login.js
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser } from '../redux/user/userSlice';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
-
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [loading, setLaoding] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error } = useSelector((state) => state.auth);
+  const authStatus = useSelector((state) => state.auth.status);
 
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-
-  const SubmitHandler = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    dispatch(loginStart());
-
-    try {
-      const res = await axios.post('http://localhost:3000/auth/login', { email, password })
-      if (res && res.data) {
-        dispatch(loginSuccess(res.data));
-        toast.success("Login Successfully")
+    setLaoding(false)
+    dispatch(loginUser(formData)).then(() => {
+      setLaoding(false)
+      if (authStatus === 'succeeded') {
         navigate('/')
-
-      } else {
-        dispatch(loginFailure(res.data.message));
-        toast.error(res.data.message)
       }
-    } catch (error) {
-      console.log(error);
-      dispatch(loginFailure(error.message));
-    }
-
-  }
+    });
+  };
 
   return (
+    <div className="w-full h-[90vh] flex items-center justify-center bg-emerald-400">
 
-    <div className="w-full h-[90vh] flex items-center justify-center bg-amber-200">
-      <div className="w-[25vw] h-[60vh] rounded-lg bg-blue-400">
-        <h1 className="text-center text-3xl text-white">Login Page</h1>
-        {loading && <p>Loading...</p>}
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+      <div className="max-w-md mx-auto rounded-md bg-sky-500">
 
-        <form onSubmit={SubmitHandler}>
 
-          <input className="w-[19vw] h-14 mt-5 rounded-lg ml-12 pl-3" type="text" onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
-          <input className="w-[19vw] h-14 mt-5 rounded-lg ml-12 pl-3" type="text" onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
-          <button className="w-[19vw] h-14 mt-5 rounded-lg ml-12 text-white bg-green-400" type="submit">Log In</button>
+        <h2 className="text-center text-3xl font-semibold text-white">Login</h2>
+        <form onSubmit={handleSubmit}>
+          <input
+          className="p-4 w-[24vw] m-4 ml-10 rounded-md"
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+          />
+          <input
+          className="p-4 w-[24vw] m-4 ml-10 rounded-md"
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+          />
+          <button disabled={loading}
+           className="p-4 w-[24vw] m-4 ml-10 text-2xl hover:bg-rose-700 rounded-md
+            bg-rose-500 text-white" type="submit">
+              {loading ? "Loading..." : "Login "}</button>
         </form>
       </div>
-
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
