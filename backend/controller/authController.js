@@ -107,12 +107,16 @@ export const loginController = async (req, res) => {
 
 export const alluserController = async (req, res) => {
     try {
-        const data = req.body;
+        const userId = req.user._id;
 
-        const alluser = await userModel.find();
+        const user = await userModel.findById(userId).select('-password');
+        if(!user){
+            return res.status(404).json({message:'user not found'})
+        }
+
         res.status(200).json({
-            message: "All User",
-            alluser
+            message: "User found success",
+            user
         })
     } catch (error) {
         console.log(error)
@@ -182,22 +186,92 @@ export const QRCodedata = async (req, res) => {
 }
 
 
-export const updateController = async (req, res) => {
-    try {
-        const { id } = req.params
-        const data = req.body
 
-        const updatedUser = await userModel.findByIdAndUpdate(id, data, { new: true })
-        res.status(200).send({
-            success: true,
-            message: "Profile Edited Successfully",
-            updatedUser
-        })
+
+export const deleteQRCode = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const deletedQR = await QRModel.findByIdAndDelete(id);
+        if (!deletedQR) {
+            return res.status(404).json({ message: "QR Code not found" });
+        }
+        res.status(200).json({ message: "QR Code deleted successfully" });
     } catch (error) {
-        console.log(error)
+        console.log(error);
         res.status(500).send({
             message: "Internal Server Error",
             error
-        })
+        });
     }
-}
+};
+
+
+// export const editController = async (req, res) => {
+//     try {
+//         const {id} = req.params;
+
+//         const updatedData = req.body;
+
+//         const updatedUser = await userModel.findByIdAndUpdate(id, updatedData, {new:true})
+//         res.status(200).send({
+//             success:true,
+//             message:"Inventary edited successfully",
+//             updatedUser
+//         })
+//     } catch (error) {
+//         console.log(error);
+//         res.status(500).send({
+//             message: "Internal Server Error",
+//             error
+//         });
+    
+//     }
+// }
+
+
+export const editQRCode = async (req, res) => {
+    const { id } = req.params;
+    const updatedData = req.body;
+    
+    
+    try {
+        const updatedQR = await QRModel.findByIdAndUpdate(id, updatedData, { new: true });
+        
+        if (!updatedQR) {
+            return res.status(404).json({ message: "QR Code not found" });
+        }
+        
+        res.status(200).json(updatedQR);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            message: "Internal Server Error",
+            error
+        });
+    }
+};
+
+
+
+export const editUserData = async (req, res) => {
+    try {
+        const {id} = req.params;
+
+        const data = req.body;
+
+        const editedUser = await userModel.findByIdAndUpdate(id, data, {new:true})
+
+        if(!editedUser){
+            return res.status(404).json({message:"user not found"})
+        }
+
+        res.status(200).json(editedUser);
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            message: "Internal Server Error",
+            error
+        });
+    }
+};

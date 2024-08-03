@@ -2,28 +2,40 @@ import { useEffect } from "react";
 import { MdDelete } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchQRCodes } from "../redux/user/userSlice";
+import { deleteQRCode, fetchQRCodes } from "../redux/user/userSlice";
+import { useNavigate } from "react-router-dom";
 
 
 const Home = () => {
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
 
   const { qrCodes, status, error } = useSelector((state) => state.auth);
 
 
-  console.log("qrcode", qrCodes)
+  // console.log("qrcode", qrCodes)
 
   useEffect(() => {
     dispatch(fetchQRCodes())
   }, [dispatch])
 
-  if(status === 'loading'){
+  if (status === 'loading') {
     return <div>Loading...</div>
   }
 
-  if(status === 'failed'){
+  if (status === 'failed') {
     return <div>Error:{error}</div>
+  }
+
+  const handleEdit = (id) => {
+    navigate(`/edit/${id}`)
+
+  }
+
+  const handleDelete = (id) => {
+    dispatch(deleteQRCode(id))
   }
 
   return (
@@ -48,32 +60,29 @@ const Home = () => {
               </thead>
               <tbody className="admin-table-body">
 
-                {qrCodes && qrCodes.map((qrCode, index) => (
-
-                
-
-                <tr key={qrCode._id}>
-                  <td className="p-2 text-left">{index + 1}</td>
-                  <td className="p-2 text-left">{qrCode.components}</td>
-                  <td className="p-2 text-left">{new Date(qrCode.dateReceived).toLocaleDateString()}</td>
-                  <td className="p-2 text-left">{qrCode.balanceItem}</td>
-                  <td className="p-2 text-left">
-                    <a href={qrCode.qrCode} download>   <img
-                      src={qrCode.qrCode}
-                      alt="QR Code"
-                      className="admin-qr-code"
-                    /></a>
-                  </td>
-                  <td className="p-2 text-left">
-                    <button className="admin-delete-btn">
-                      <MdDelete className="admin-icon" />
-                    </button>
-                    <button className="admin-edit-btn">
-                      <MdEdit className="admin-icon" />
-                    </button>
-                  </td>
-                </tr>
-))}
+                {qrCodes && qrCodes?.map((qrCode, index) => (
+                   <tr key={qrCode._id}>
+                    <td className="p-2 text-left">{index + 1}</td>
+                    <td className="p-2 text-left">{qrCode.components}</td>
+                    <td className="p-2 text-left">{new Date(qrCode.dateReceived).toLocaleDateString()}</td>
+                    <td className="p-2 text-left">{qrCode.balanceItem}</td>
+                    <td className="p-2 text-left">
+                      <a href={qrCode.qrCode} download>   <img
+                        src={qrCode.qrCode}
+                        alt="QR Code"
+                        className="admin-qr-code"
+                      /></a>
+                    </td>
+                    <td className="p-2 text-left">
+                      <button className="admin-delete-btn">
+                        <MdDelete onClick={() => handleDelete(qrCode._id)} className="admin-icon" />
+                      </button>
+                      <button className="admin-edit-btn">
+                        <MdEdit onClick={() => handleEdit(qrCode._id)} className="admin-icon" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

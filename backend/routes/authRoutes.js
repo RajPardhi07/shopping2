@@ -1,6 +1,6 @@
 import express from 'express'
-import { alluserController, generateQR, loginController, QRCodedata, registerController, updateController } from '../controller/authController.js';
-import {requireSignIn} from '../middleware/authMiddleware.js';
+import { alluserController, deleteQRCode, editQRCode, editUserData, generateQR, loginController, QRCodedata, registerController } from '../controller/authController.js';
+import { requireAuth } from '../middleware/authMiddleware.js';
 const router = express.Router();
 
 
@@ -9,13 +9,18 @@ router.post('/register', registerController);
 
 router.post('/login', loginController);
 
-router.put('/update/:id', requireSignIn, updateController)
 
 router.post('/generateQR',  generateQR);
 
+router.put('/editCode/:id', editQRCode);
+
+router.put('/editUser/:id', editUserData);
+
 router.get('/generateQR', QRCodedata);
 
-router.get('/allusers',  alluserController);
+router.delete('/deletecode/:id', deleteQRCode);
+
+router.get('/allusers', requireAuth,  alluserController);
 
 
 

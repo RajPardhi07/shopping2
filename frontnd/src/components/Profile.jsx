@@ -1,49 +1,60 @@
-import { MdDelete } from "react-icons/md";
-import { MdEdit } from "react-icons/md";
-
+import {  useSelector } from "react-redux";
 
 const Profile = () => {
+
+  // const dispatch = useDispatch();
+
+  const user = useSelector((state) => state.auth.user)
+
+  console.log("userprofilepage", user)
+
+  // useEffect(() => {
+  //   dispatch(fetchUserDetails());
+  // }, [dispatch])
+
+  
   return (
-    <div>
-      <div className='admin-table-container'>
 
-        <table className="admin-table">
-          <thead className="admin-table-head">
-            <tr>
-              <th className="admin-table-cell">#</th>
-              <th className="admin-table-cell">Component</th>
-              <th className="admin-table-cell">Date Received</th>
-              <th className="admin-table-cell">Balance Items</th>
-              <th className="admin-table-cell">QR Code</th>
-              <th className="admin-table-cell">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="admin-table-body">
+    <div className="flex items-center justify-center">
+      <div className="bg-slate-500 mt-4 p-3 w-[30vw] rounded-md">
 
-            <tr >
-              <td className="admin-table-cell">1</td>
-              <td className="admin-table-cell">ddd</td>
-              <td className="admin-table-cell">33</td>
-              <td className="admin-table-cell">76</td>
-              <td className="admin-table-cell">
-                <a href="" download>   <img
-                  src=""
-                  alt="QR Code"
-                  className="admin-qr-code"
-                /></a>
-              </td>
-              <td className="admin-table-cell">
-                <button className="admin-delete-btn">
-                  <MdDelete className="admin-icon" />
-                </button>
-                <button className="admin-edit-btn">
-                  <MdEdit className="admin-icon" />
-                </button>
-              </td>
-            </tr>
+        <h1 className="text-center text-3xl mb-3 font-semibold text-white ">Welcome to my Profile</h1>
+        
 
-          </tbody>
-        </table>
+        {user ? (
+
+          <div>
+            <div className="flex flex-col ">
+              <label className="text-white">Email</label>
+              <input value={user.user.email} className="p-4 w-[27vw]   rounded-md"
+                type="text" />
+
+            </div>
+            <div className="flex flex-col mt-3">
+              <label className="text-white">Name</label>
+              <input value={user.user.name} className="p-4 w-[27vw]    rounded-md"
+                type="text" />
+
+            </div>
+            
+            <div className="flex flex-col mt-3">
+              <label className="text-white">Gender</label>
+              <input value={user.user.gender} className="p-4 w-[27vw]    rounded-md"
+                type="text" />
+
+            </div>
+            <div className="flex flex-col mt-3">
+              <label className="text-white">Address</label>
+              <input value={user.user.address} className="p-4 w-[27vw]    rounded-md"
+                type="text" />
+
+            </div>
+          </div>
+        ) :  <div>Loading...</div>}
+
+        <button className="p-4 w-[27vw]  mt-3 text-white text-2xl font-semibold  rounded-md bg-green-500">Update Profile</button>
+
+
       </div>
     </div>
   )

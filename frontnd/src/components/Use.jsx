@@ -1,85 +1,25 @@
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from 'react-router-dom';
-import { registerUser } from '../redux/user/userSlice';
+// In the Redux slice code, the line state.qrCodes = state.qrCodes.filter(qrCode => qrCode._id !== action.meta.arg); is used to update the state after a QR code has been successfully deleted. Let's break down what this line does:
 
-const Register = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [gender, setGender] = useState('');
-  const [address, setAddress] = useState('');
-  const [password, setPassword] = useState('');
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const authStatus = useSelector((state) => state.auth.status);
+// Explanation:
+// state.qrCodes:
 
-  console.log("authstatus", authStatus)
+// This represents the current state of the qrCodes array, which holds all the QR codes fetched from the server.
+// .filter(qrCode => qrCode._id !== action.meta.arg):
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const formData = { name, email, password, gender, address };
-    dispatch(registerUser(formData)).then(() => {
-      if (authStatus === 'succeeded') {
-        navigate('/login');
-      }
-    });
-  };
+// The filter method creates a new array with all elements that pass the test implemented by the provided function. In this case, it keeps only those QR codes whose _id is not equal to the ID of the deleted QR code (action.meta.arg).
+// qrCode._id:
 
-  return (
-    <div className="w-full h-[90vh] flex items-center justify-center bg-orange-500">
-      <div className="max-w-md mx-auto rounded-md bg-lime-400">
-        <h2 className="text-center text-3xl font-semibold text-white">Register</h2>
-        <form onSubmit={handleSubmit}>
-          <input
-            className="p-4 w-[24vw] m-4 ml-10 rounded-md"
-            type="text"
-            name="name"
-            placeholder="Username"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          <input
-            className="p-4 w-[24vw] m-4 ml-10 rounded-md"
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <input
-            type="password"
-            className="p-4 w-[24vw] m-4 ml-10 rounded-md"
-            name="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <input
-            type="text"
-            className="p-4 w-[24vw] m-4 ml-10 rounded-md"
-            name="gender"
-            placeholder="gender"
-            value={gender}
-            onChange={(e) => setGender(e.target.value)}
-          />
-          <input
-            type="text"
-            className="p-4 w-[24vw] m-4 ml-10 rounded-md"
-            name="address"
-            placeholder="address"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-          />
-          <button
-            className="p-4 w-[24vw] m-4 ml-10 text-2xl hover:bg-slate-700 rounded-md bg-slate-900 text-white"
-            type="submit"
-          >
-            Register
-          </button>
-        </form>
-      </div>
-    </div>
-  );
-};
+// This is the identifier of the current QR code being processed in the filter function.
+// action.meta.arg:
 
-export default Register;
+// action.meta.arg contains the ID of the QR code that was deleted. This is the same ID that was passed to the deleteQRCode thunk when it was dispatched.
+// Detailed Breakdown:
+// When the deleteQRCode thunk is dispatched, it receives the ID of the QR code to be deleted as an argument.
+// After the API call to delete the QR code is successful, the deleteQRCode.fulfilled case is triggered.
+// The line state.qrCodes = state.qrCodes.filter(qrCode => qrCode._id !== action.meta.arg); is executed to update the state.
+// The filter method iterates over each qrCode in the state.qrCodes array.
+// For each qrCode, it checks if qrCode._id is not equal to action.meta.arg (the ID of the deleted QR code).
+// If the condition is true, the qrCode is included in the new array; otherwise, it is excluded.
+// The result is a new array that excludes the deleted QR code, which is then assigned back to state.qrCodes.
+// Purpose:
+// The purpose of this line is to remove the deleted QR code from the Redux state so that the UI can be updated to reflect this change without needing to fetch the data again from the server. By filtering out the deleted QR code, the state is kept in sync with the server-side data.
